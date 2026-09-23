@@ -39,7 +39,7 @@
         <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-emerald-600 rounded-full"></span>
       </div>
       <div>
-        <h2 class="text-base font-semibold leading-tight">ShopSpur Support</h2>
+        <h2 class="text-base font-semibold leading-tight">Chat Support Agent</h2>
         <div class="flex items-center gap-1.5 mt-0.5">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
           <span class="text-xs text-emerald-100">Online</span>

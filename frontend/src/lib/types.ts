@@ -8,6 +8,7 @@ export interface ChatMessage {
 export interface SendMessageRequest {
   message: string;
   sessionId?: string | null;
+  clientMessageId: string;
 }
 
 export interface SendMessageResponse {

@@ -145,7 +145,7 @@ export async function generateReply(
     // Handle content filter refusal gracefully
     if (choice.message.refusal) {
       console.warn(`[LLM REFUSAL] ${choice.message.refusal}`);
-      return "I'm sorry, I can't answer that. If you need assistance, please contact support@shopspur.com.";
+      return "I'm sorry, I can't answer that. Please contact the store's support team for assistance.";
     }
 
     const content = choice.message.content;

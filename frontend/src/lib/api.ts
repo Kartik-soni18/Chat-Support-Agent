@@ -4,7 +4,8 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 export async function sendMessage(
   message: string, 
-  sessionId?: string | null
+  sessionId: string | null | undefined,
+  clientMessageId: string
 ): Promise<SendMessageResponse> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30000);
@@ -13,7 +14,7 @@ export async function sendMessage(
     const res = await fetch(`${API_BASE}/api/chat/message`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, sessionId }),
+      body: JSON.stringify({ message, sessionId, clientMessageId }),
       signal: controller.signal,
     });
     clearTimeout(timeout);

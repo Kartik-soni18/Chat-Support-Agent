@@ -20,7 +20,7 @@ function seed(): void {
   addMessage(
     conversationId,
     "ai",
-    "You can return any item within 30 days of purchase for a full refund. Items must be unused and in original packaging. Contact us at support@shopspur.com to initiate a return."
+    "You can return any item within 30 days of purchase for a full refund. Items must be unused and in original packaging. Contact the store's support team to initiate a return."
   );
 
   addMessage(

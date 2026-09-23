@@ -21,13 +21,13 @@ const initialState: ChatState = {
 function createChatStore() {
   const { subscribe, update, set } = writable<ChatState>(initialState);
 
-  let lastUserMessage: string | null = null;
+  let lastUserMessage: { text: string; clientMessageId: string } | null = null;
 
   return {
     subscribe,
 
-    async sendMessage(text: string) {
-      lastUserMessage = text;
+    async sendMessage(text: string, clientMessageId: string = crypto.randomUUID()) {
+      lastUserMessage = { text, clientMessageId };
 
       update((state) => {
         const optimisticMessage: ChatMessage = {
@@ -46,7 +46,7 @@ function createChatStore() {
 
       try {
         const currentState = getCurrentState();
-        const response = await api.sendMessage(text, currentState.sessionId);
+        const response = await api.sendMessage(text, currentState.sessionId, clientMessageId);
 
         update((state) => {
           const withoutOptimistic = state.messages.filter((m) => m.id > 0);
@@ -118,7 +118,7 @@ function createChatStore() {
 
     async retryLastMessage() {
       if (lastUserMessage) {
-        await this.sendMessage(lastUserMessage);
+        await this.sendMessage(lastUserMessage.text, lastUserMessage.clientMessageId);
       }
     },
   };

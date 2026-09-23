@@ -3,6 +3,9 @@ import { z } from "zod";
 import {
   createConversation,
   getMessages,
+  getMessagesBeforeMessage,
+  getMessageByClientMessageId,
+  getReplyAfterMessage,
   addMessage,
   conversationExists,
 } from "../services/conversation.js";
@@ -56,6 +59,7 @@ const sendMessageSchema = z.object({
     .max(2000, "Message too long")
     .transform((s) => s.trim()),
   sessionId: z.string().uuid().optional().nullable(),
+  clientMessageId: z.string().uuid(),
 });
 
 const sessionIdSchema = z.string().uuid();
@@ -76,7 +80,7 @@ router.post(
       }
 
       let { message } = parseResult.data;
-      const { sessionId } = parseResult.data;
+      const { sessionId, clientMessageId } = parseResult.data;
 
       // Sanitize input: strip control chars, normalize whitespace
       message = sanitizeUserInput(message);
@@ -107,9 +111,30 @@ router.post(
         conversationId = createConversation();
       }
 
-      addMessage(conversationId, "user", message);
+      const existingMessage = getMessageByClientMessageId(conversationId, clientMessageId);
+      if (existingMessage) {
+        const existingReply = getReplyAfterMessage(conversationId, existingMessage.id);
+        if (existingReply) {
+          console.log(`[IDEMPOTENT REPLY] sessionId=${conversationId} | clientMessageId=${clientMessageId}`);
+          res.json({ reply: existingReply.text, sessionId: conversationId });
+          return;
+        }
 
+        // A prior request saved the user message but failed before producing a reply.
+        // Use only the earlier turns as context so this message is not sent twice.
+        const history = getMessagesBeforeMessage(conversationId, existingMessage.id);
+        const reply = await generateReply(history, message);
+        addMessage(conversationId, "ai", reply);
+
+        console.log(`[RETRIED REPLY] sessionId=${conversationId} | replyLen=${reply.length}`);
+        res.json({ reply, sessionId: conversationId });
+        return;
+      }
+
+      // Capture context before writing the new user turn. generateReply appends
+      // userMessage itself, so loading history afterwards would duplicate it.
       const history = getMessages(conversationId);
+      addMessage(conversationId, "user", message, clientMessageId);
 
       const reply = await generateReply(history, message);
 

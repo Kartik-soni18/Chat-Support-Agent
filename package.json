@@ -1,7 +1,7 @@
 {
-  "name": "spur-ai-chat",
+  "name": "chat-support-agent",
   "version": "1.0.0",
-  "description": "AI Live Chat Agent - Spur take-home assignment",
+  "description": "AI customer support chat agent",
   "private": true,
   "scripts": {
     "dev:backend": "cd backend && npm run dev",

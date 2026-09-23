@@ -1,9 +1,6 @@
-# Spur AI Live Chat Agent
+# Chat Support Agent
 
-A mini AI customer support chat widget built as a take-home assignment for Spur's Founding Full-Stack Engineer role. This project simulates a real customer support chat where an AI agent answers user questions using OpenAI's GPT-4o-mini, with full conversation persistence via SQLite.
-
-**Live Demo**: [https://spur-chat-frontend-wnpt.onrender.com](https://spur-chat-frontend-wnpt.onrender.com)  
-**Backend API**: [https://spur-chat-backend-dqy8.onrender.com](https://spur-chat-backend-dqy8.onrender.com)
+A mini AI customer support chat widget. The app demonstrates contextual answers from an OpenAI-compatible model and conversation persistence in SQLite.
 
 ---
 
@@ -12,7 +9,7 @@ A mini AI customer support chat widget built as a take-home assignment for Spur'
 - **Real-time AI chat** — Messages are sent to a backend that calls OpenAI's GPT-4o-mini with a tailored support agent prompt
 - **Contextual conversations** — The AI remembers up to 10 previous messages for contextually relevant replies
 - **Session persistence** — Conversations are saved to SQLite and can be resumed via session ID (stored in localStorage)
-- **FAQ domain knowledge** — The AI is seeded with knowledge about a fictional store (ShopSpur) including shipping, returns, support hours, and payment info
+- **FAQ domain knowledge** — The AI is seeded with policies for a fictional Demo Store, including shipping, returns, support hours, and payment info
 - **Smart caching** — Redis-backed response cache reduces LLM costs and latency for repeated questions
 - **Input guardrails** — Sanitization, prompt injection detection, token budget guards, and backend timeouts prevent bad input from breaking the system
 - **Robust error handling** — Graceful handling of LLM failures, rate limits, network errors, content filter refusals, and invalid input with user-friendly messages
@@ -44,8 +41,8 @@ A mini AI customer support chat widget built as a take-home assignment for Spur'
 ### 1. Clone & Install
 
 ```bash
-git clone <repo-url>
-cd spur-ai-chat
+git clone <repo-url> chat-support-agent
+cd chat-support-agent
 
 # Install backend dependencies
 cd backend
@@ -243,7 +240,7 @@ LLM calls abort after **15 seconds** via `AbortController`. Prevents hung reques
 ### Prompt Design
 
 The system prompt includes:
-- Role definition ("helpful, friendly customer support agent for ShopSpur")
+- Role definition ("helpful, friendly customer support agent for Demo Store")
 - Structured FAQ knowledge (shipping, returns, support hours, payment)
 - Constraint to be honest when it doesn't know something
 - Max length hint ("keep responses under 150 words")
@@ -323,9 +320,7 @@ Health check. Returns `{ "status": "ok" }`.
 
 This project includes a `render.yaml` Blueprint for easy deployment on [Render](https://render.com).
 
-**Deployed URLs:**
-- **Frontend**: https://spur-chat-frontend-wnpt.onrender.com
-- **Backend**: https://spur-chat-backend-dqy8.onrender.com
+The Blueprint names the services `chat-support-agent-frontend` and `chat-support-agent-backend`. Set `FRONTEND_URL` to the frontend's actual deployed URL and `VITE_API_URL` to the backend's actual deployed URL when creating the services.
 
 > ⚠️ **Non-Persistent Storage (Free Tier Limitation)**
 >

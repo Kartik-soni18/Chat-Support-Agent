@@ -1,11 +1,10 @@
 # Render Blueprint — deploys both backend and frontend automatically
 # Usage: Render Dashboard → Blueprints → New Blueprint Instance → connect repo
-# After deploy, manually set OPENAI_API_KEY, OPENAI_BASE_URL, and REDIS_URL
-# in the Render Dashboard when prompted by the Blueprint wizard.
+# Set the required API key and the two service URLs in the Blueprint wizard.
 
 services:
   - type: web
-    name: spur-chat-backend
+    name: chat-support-agent-backend
     runtime: node
     plan: free
     rootDir: backend
@@ -25,18 +24,18 @@ services:
       - key: MAX_TOKENS
         value: "500"
       - key: FRONTEND_URL
-        value: https://spur-chat-frontend-wnpt.onrender.com
+        sync: false  # Set to the deployed frontend URL for CORS
       - key: REDIS_URL
         sync: false  # Optional: set if using Upstash Redis
     # Note: No persistent disk — free tier only. SQLite data is lost on redeploy.
     # For production, add a disk (requires paid plan) or switch to Render Postgres.
 
   - type: web
-    name: spur-chat-frontend
+    name: chat-support-agent-frontend
     runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: build
     envVars:
       - key: VITE_API_URL
-        value: https://spur-chat-backend-dqy8.onrender.com
+        sync: false  # Set to the deployed backend URL before the frontend build
